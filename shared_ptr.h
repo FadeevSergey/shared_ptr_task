@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <utility>
-
-struct control_block {
-
+class A {
+    std::shared_ptr ptr;
 };
