@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.13.4)
 
 project(shared_ptr_testing)
 include_directories(.)
@@ -8,7 +8,9 @@ add_executable(shared_ptr_testing
     main.cpp
     shared_ptr.h
     test_object.cpp
-    test_object.h)
+    test_object.h
+    control_block.cpp
+    control_block.h)
 
 set_property(TARGET shared_ptr_testing PROPERTY CXX_STANDARD 17)
 
