@@ -27,7 +27,7 @@ void control_block::release_ref() {
     release_weak();
 }
 
-void control_block::release_weak() {
+void control_block::release_weak() noexcept {
     --weak_count;
     if(weak_count == 0) {
         delete this;

@@ -7,7 +7,7 @@ protected:
     control_block();
 
     void release_ref();
-    void release_weak();
+    void release_weak() noexcept;
 
     void add_ref() noexcept;
     void add_weak() noexcept;

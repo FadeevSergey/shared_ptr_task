@@ -5,12 +5,13 @@ include_directories(.)
 add_subdirectory(gtest)
 
 add_executable(shared_ptr_testing
-    main.cpp
-    shared_ptr.h
-    test_object.cpp
-    test_object.h
-    control_block.cpp
-    control_block.h)
+        main.cpp
+        shared_ptr.h
+        test_object.cpp
+        test_object.h
+        control_block.cpp
+        control_block.h
+        cb_ptr.h)
 
 set_property(TARGET shared_ptr_testing PROPERTY CXX_STANDARD 17)
 
