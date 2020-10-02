@@ -11,7 +11,7 @@ add_executable(shared_ptr_testing
         test_object.h
         control_block.cpp
         control_block.h
-        cb_ptr.h)
+        control_block_ptr.h)
 
 set_property(TARGET shared_ptr_testing PROPERTY CXX_STANDARD 17)
 

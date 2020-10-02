@@ -3,9 +3,9 @@
 #include "control_block.h"
 
 template<class Y, class Deleter>
-class cb_ptr : control_block, Deleter {
+class control_block_ptr : control_block, Deleter {
 public:
-    cb_ptr(Y *pointer, Deleter deleter) : pointer(pointer), Deleter(std::move(deleter)) {
+    control_block_ptr(Y *pointer, Deleter deleter) : pointer(pointer), Deleter(std::move(deleter)) {
         add_ref();
     }
 
