@@ -3,7 +3,7 @@
 #include <cstddef>
 
 class control_block {
-protected:
+public:
     control_block();
 
     void release_ref();
