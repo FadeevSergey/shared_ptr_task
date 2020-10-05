@@ -43,7 +43,7 @@ public:
 
     //8
     template<class Y>
-    shared_ptr(const shared_ptr<Y> &r, T *ptr) noexcept : pointer(ptr), control_block(r.control_block) {
+    shared_ptr(const shared_ptr<Y> &r, T *ptr) noexcept : pointer(ptr), control_block(r.getCB()) {
         if (control_block != nullptr) {
             control_block->add_ref();
         }
@@ -58,7 +58,7 @@ public:
 
     //9.2
     template<class Y>
-    shared_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.pointer), control_block(r.control_block) {
+    shared_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.get()), control_block(r.getCB()) {
         if (control_block != nullptr) {
             control_block->add_ref();
         }
@@ -84,7 +84,7 @@ public:
 
     //1
     void reset() noexcept {
-        reset <T> (nullptr);
+        reset < T > (nullptr);
     }
 
     //2
@@ -99,9 +99,22 @@ public:
         shared_ptr<T>(ptr, d).swap(*this);
     }
 
-    T *get() const noexcept {
+    T *get() const {
         return pointer;
     }
+
+    control_block *getCB() const {
+        return control_block;
+    }
+
+    void setPoiner(T *ptr) {
+        pointer = ptr;
+    }
+
+    void setCB(control_block *cb) {
+        control_block = cb;
+    }
+
 
     T &operator*() const noexcept {
         return *pointer;
@@ -176,7 +189,7 @@ public:
     friend bool operator!=(std::nullptr_t, const shared_ptr<Y> &rhs) noexcept;
 
 
-//private:
+private:
     T *pointer;
     control_block *control_block;
 };
@@ -242,7 +255,7 @@ struct weak_ptr {
 
     //4
     template<class Y>
-    weak_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.pointer), control_block(r.control_block) {
+    weak_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.get()), control_block(r.getCB()) {
         if (control_block != nullptr) {
             control_block->add_weak();
         }
@@ -315,8 +328,8 @@ struct weak_ptr {
     shared_ptr<T> lock() const noexcept {
         shared_ptr<T> new_shared_ptr;
         if (control_block != nullptr && control_block->get_ref_count() != 0) {
-            new_shared_ptr.pointer = pointer;
-            new_shared_ptr.control_block = control_block;
+            new_shared_ptr.setPoiner(pointer);
+            new_shared_ptr.setCB(control_block);
             control_block->add_ref();
         }
         return new_shared_ptr;
