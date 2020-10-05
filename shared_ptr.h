@@ -6,6 +6,13 @@
 #include "control_block_ptr.h"
 #include "control_block_object.h"
 
+template<class S>
+struct shared_ptr;
+
+template<class W>
+struct weak_ptr;
+
+
 template<class T>
 class shared_ptr {
 public:
@@ -43,7 +50,7 @@ public:
 
     //8
     template<class Y>
-    shared_ptr(const shared_ptr<Y> &r, T *ptr) noexcept : pointer(ptr), control_block(r.getCB()) {
+    shared_ptr(const shared_ptr<Y> &r, T *ptr) noexcept : pointer(ptr), control_block(r.control_block) {
         if (control_block != nullptr) {
             control_block->add_ref();
         }
@@ -58,7 +65,7 @@ public:
 
     //9.2
     template<class Y>
-    shared_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.get()), control_block(r.getCB()) {
+    shared_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.pointer), control_block(r.control_block) {
         if (control_block != nullptr) {
             control_block->add_ref();
         }
@@ -84,7 +91,7 @@ public:
 
     //1
     void reset() noexcept {
-        reset < T > (nullptr);
+        reset <T> (nullptr);
     }
 
     //2
@@ -99,22 +106,9 @@ public:
         shared_ptr<T>(ptr, d).swap(*this);
     }
 
-    T *get() const {
+    T *get() const noexcept {
         return pointer;
     }
-
-    control_block *getCB() const {
-        return control_block;
-    }
-
-    void setPoiner(T *ptr) {
-        pointer = ptr;
-    }
-
-    void setCB(control_block *cb) {
-        control_block = cb;
-    }
-
 
     T &operator*() const noexcept {
         return *pointer;
@@ -188,8 +182,13 @@ public:
     template<class Y>
     friend bool operator!=(std::nullptr_t, const shared_ptr<Y> &rhs) noexcept;
 
-
 private:
+    template<class S>
+    friend class shared_ptr;
+
+    template<class W>
+    friend class weak_ptr;
+
     T *pointer;
     control_block *control_block;
 };
@@ -255,7 +254,7 @@ struct weak_ptr {
 
     //4
     template<class Y>
-    weak_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.get()), control_block(r.getCB()) {
+    weak_ptr(const shared_ptr<Y> &r) noexcept : pointer(r.pointer), control_block(r.control_block) {
         if (control_block != nullptr) {
             control_block->add_weak();
         }
@@ -328,14 +327,20 @@ struct weak_ptr {
     shared_ptr<T> lock() const noexcept {
         shared_ptr<T> new_shared_ptr;
         if (control_block != nullptr && control_block->get_ref_count() != 0) {
-            new_shared_ptr.setPoiner(pointer);
-            new_shared_ptr.setCB(control_block);
+            new_shared_ptr.pointer = pointer;
+            new_shared_ptr.control_block = control_block;
             control_block->add_ref();
         }
         return new_shared_ptr;
     }
 
 private:
+    template<class S>
+    friend class shared_ptr;
+
+    template<typename W>
+    friend class weak_ptr;
+
     T *pointer;
     control_block *control_block;
 };
